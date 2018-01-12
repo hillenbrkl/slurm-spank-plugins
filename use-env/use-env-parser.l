@@ -257,7 +257,7 @@ struct file_info {
  *  Static Globals
  ****************************************************************************/
 
-static List includes = NULL;
+static LSDList includes = NULL;
 static struct file_info *current;
 
 /*
@@ -275,11 +275,11 @@ static struct file_info *current;
  *  The envtab contains cached environment variable "symbol" records
  *    for later destruction.
  */
-static List keytab = NULL;
-static List symtab = NULL;
-static List envtab = NULL;
+static LSDList keytab = NULL;
+static LSDList symtab = NULL;
+static LSDList envtab = NULL;
 
-static List itemcache = NULL;
+static LSDList itemcache = NULL;
 
 /****************************************************************************
  *  Include file funtions
@@ -744,7 +744,7 @@ struct sym * sym_create (const char *name, const char *value)
 
 }
 
-static struct sym * sym_lookup (List l, char *s)
+static struct sym * sym_lookup (LSDList l, char *s)
 {
     if (l == NULL)
         return (NULL);
@@ -870,15 +870,13 @@ int print_sym (struct sym *s, void *arg)
 void dump_symbols (void)
 {
     log_msg ("Dumping symbols\n");
-    if (symtab)
-      list_for_each (symtab, (ListForF) print_sym, NULL);
+    list_for_each (symtab, (ListForF) print_sym, NULL);
 }
 
 void dump_keywords (void)
 {
     log_msg ("Dumping keywords\n");
-    if (keytab)
-      list_for_each (keytab, (ListForF) print_sym, NULL);
+    list_for_each (keytab, (ListForF) print_sym, NULL);
 }
 
 /****************************************************************************

@@ -106,11 +106,11 @@ static int _setsched_opt_process (int val, const char *optarg, int remote)
 
 	if (strncmp ("no", optarg, 2) == 0) {
 	        setsched_default=0;
-		xdebug("setsched: disabled on user request");
+		xdebug("setsched: disabled on user request - %s",optarg);
 	}
 	else if (strncmp ("yes", optarg, 3) == 0) {
 	        setsched_default=1;
-		xdebug("setsched: enabled on user request");
+		xdebug("setsched: enabled on user request - %s",optarg);
 	}
 	else if (strncmp ("auto", optarg, 4) != 0) {
 		xerror ("setsched: bad parameter %s", optarg);

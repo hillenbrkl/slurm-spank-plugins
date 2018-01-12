@@ -28,8 +28,8 @@
 
 #include "list.h"
 
-List list_split (char *sep, char *str);
-List list_split_append (List l, char *sep, char *str);
-int list_join (char *result, size_t len, const char *sep, List l);
+LSDList list_split (char *sep, char *str);
+LSDList list_split_append (LSDList l, char *sep, char *str);
+int list_join (char *result, size_t len, const char *sep, LSDList l);
 
 #endif /* !_SPLIT_H */

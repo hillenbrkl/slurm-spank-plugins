@@ -1,7 +1,5 @@
 PACKAGE    ?= slurm-spank-plugins
 
-sysconfdir ?= /etc/slurm/
-
 LIBNAME    ?= lib$(shell uname -m | grep -q x86_64 && echo 64)
 LIBDIR     ?= /usr/$(LIBNAME)
 BINDIR     ?= /usr/bin
@@ -21,7 +19,6 @@ PLUGINS = \
    pty.so \
    addr-no-randomize.so \
    preserve-env.so \
-   private-mount.so \
    setsched.so
 
 LIBRARIES = \
@@ -29,6 +26,7 @@ LIBRARIES = \
 
 SUBDIRS = \
     use-env \
+    lua \
     overcommit-memory
 
 ifeq ($(BUILD_CPUSET), 1)
@@ -59,9 +57,6 @@ auto-affinity.so : auto-affinity.o lib/split.o lib/list.o lib/fd.o
 
 preserve-env.so : preserve-env.o lib/list.o
 	$(CC) -shared -o $*.so preserve-env.o lib/list.o
-
-private-mount.so : private-mount.o lib/list.o lib/split.o
-	$(CC) -shared -o $*.so private-mount.o lib/list.o lib/split.o
 
 pty.so : pty.o
 	$(CC) -shared -o $*.so $< -lutil

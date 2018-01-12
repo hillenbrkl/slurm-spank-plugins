@@ -68,7 +68,7 @@ struct lua_script_option {
  *  Global lua State and script_option_list declarations:
  */
 static lua_State *global_L = NULL;
-static List script_option_list = NULL;
+static LSDList script_option_list = NULL;
 
 /*
  *  Structure describing an individual lua script
@@ -80,7 +80,7 @@ struct lua_script {
     int ref;
     int fail_on_error;
 };
-List lua_script_list = NULL;
+LSDList lua_script_list = NULL;
 
 /*
  *  Tell lua_atpanic where to longjmp on exceptions:
@@ -920,17 +920,17 @@ static int l_spank_log_msg (lua_State *L)
         return (0);
 
     if (level == -1) {
-        slurm_error ("%s", msg);
+        slurm_error (msg);
         lua_pushnumber (L, -1);
         return (1);
     }
 
     if (level == 0)
-        slurm_info ("%s", msg);
+        slurm_info (msg);
     else if (level == 1)
-        slurm_verbose ("%s", msg);
+        slurm_verbose (msg);
     else if (level == 2)
-        slurm_debug ("%s", msg);
+        slurm_debug (msg);
     return (0);
 }
 
@@ -1073,11 +1073,11 @@ static int ef (const char *p, int eerrno)
     return (-1);
 }
 
-List lua_script_list_create (lua_State *L, const char *pattern)
+LSDList lua_script_list_create (lua_State *L, const char *pattern)
 {
     glob_t gl;
     size_t i;
-    List l = NULL;
+    LSDList l = NULL;
 
     if (pattern == NULL)
         return (NULL);
@@ -1114,7 +1114,7 @@ List lua_script_list_create (lua_State *L, const char *pattern)
     return l;
 }
 
-static int spank_lua_options_table_register (List script_list, spank_t sp)
+static int spank_lua_options_table_register (LSDList script_list, spank_t sp)
 {
     struct lua_script *script;
     ListIterator i = list_iterator_create (script_list);
@@ -1293,7 +1293,7 @@ int spank_lua_init (spank_t sp, int ac, char *av[])
     return rc;
 }
 
-static int call_foreach (List l, spank_t sp, const char *name,
+static int call_foreach (LSDList l, spank_t sp, const char *name,
         int ac, char *av[])
 {
     int rc = 0;

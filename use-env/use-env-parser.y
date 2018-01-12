@@ -223,7 +223,7 @@ struct cond {
  *  Global static variables
  ****************************************************************************/
 
-static List cond_stack = NULL;
+static LSDList cond_stack = NULL;
 
 /****************************************************************************
  *  Includes

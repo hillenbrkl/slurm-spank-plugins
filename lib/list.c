@@ -125,10 +125,10 @@ typedef struct listNode * ListNode;
  *  Prototypes  *
  ****************/
 
-static void * list_node_create (List l, ListNode *pp, void *x);
-static void * list_node_destroy (List l, ListNode *pp);
-static List list_alloc (void);
-static void list_free (List l);
+static void * list_node_create (LSDList l, ListNode *pp, void *x);
+static void * list_node_destroy (LSDList l, ListNode *pp);
+static LSDList list_alloc (void);
+static void list_free (LSDList l);
 static ListNode list_node_alloc (void);
 static void list_node_free (ListNode p);
 static ListIterator list_iterator_alloc (void);
@@ -141,7 +141,7 @@ static void list_free_aux (void *x, void *pfreelist);
  *  Variables  *
  ***************/
 
-static List list_free_lists = NULL;
+static LSDList list_free_lists = NULL;
 static ListNode list_free_nodes = NULL;
 static ListIterator list_free_iterators = NULL;
 
@@ -215,10 +215,10 @@ static pthread_mutex_t list_free_lock = PTHREAD_MUTEX_INITIALIZER;
  *  Functions  *
  ***************/
 
-List
+LSDList
 list_create (ListDelF f)
 {
-    List l;
+    LSDList l;
 
     if (!(l = list_alloc()))
         return(lsd_nomem_error(__FILE__, __LINE__, "list create"));
@@ -234,7 +234,7 @@ list_create (ListDelF f)
 
 
 void
-list_destroy (List l)
+list_destroy (LSDList l)
 {
     ListIterator i, iTmp;
     ListNode p, pTmp;
@@ -267,7 +267,7 @@ list_destroy (List l)
 
 
 int
-list_is_empty (List l)
+list_is_empty (LSDList l)
 {
     int n;
 
@@ -281,7 +281,7 @@ list_is_empty (List l)
 
 
 int
-list_count (List l)
+list_count (LSDList l)
 {
     int n;
 
@@ -295,7 +295,7 @@ list_count (List l)
 
 
 void *
-list_append (List l, void *x)
+list_append (LSDList l, void *x)
 {
     void *v;
 
@@ -310,7 +310,7 @@ list_append (List l, void *x)
 
 
 void *
-list_prepend (List l, void *x)
+list_prepend (LSDList l, void *x)
 {
     void *v;
 
@@ -325,7 +325,7 @@ list_prepend (List l, void *x)
 
 
 void *
-list_find_first (List l, ListFindF f, void *key)
+list_find_first (LSDList l, ListFindF f, void *key)
 {
     ListNode p;
     void *v = NULL;
@@ -346,7 +346,7 @@ list_find_first (List l, ListFindF f, void *key)
 
 
 int
-list_delete_all (List l, ListFindF f, void *key)
+list_delete_all (LSDList l, ListFindF f, void *key)
 {
     ListNode *pp;
     void *v;
@@ -375,7 +375,7 @@ list_delete_all (List l, ListFindF f, void *key)
 
 
 int
-list_for_each (List l, ListForF f, void *arg)
+list_for_each (LSDList l, ListForF f, void *arg)
 {
     ListNode p;
     int n = 0;
@@ -397,7 +397,7 @@ list_for_each (List l, ListForF f, void *arg)
 
 
 void
-list_sort (List l, ListCmpF f)
+list_sort (LSDList l, ListCmpF f)
 {
 /*  Note: Time complexity O(n^2).
  */
@@ -442,7 +442,7 @@ list_sort (List l, ListCmpF f)
 
 
 void *
-list_push (List l, void *x)
+list_push (LSDList l, void *x)
 {
     void *v;
 
@@ -457,7 +457,7 @@ list_push (List l, void *x)
 
 
 void *
-list_pop (List l)
+list_pop (LSDList l)
 {
     void *v;
 
@@ -471,7 +471,7 @@ list_pop (List l)
 
 
 void *
-list_peek (List l)
+list_peek (LSDList l)
 {
     void *v;
 
@@ -485,7 +485,7 @@ list_peek (List l)
 
 
 void *
-list_enqueue (List l, void *x)
+list_enqueue (LSDList l, void *x)
 {
     void *v;
 
@@ -500,7 +500,7 @@ list_enqueue (List l, void *x)
 
 
 void *
-list_dequeue (List l)
+list_dequeue (LSDList l)
 {
     void *v;
 
@@ -514,7 +514,7 @@ list_dequeue (List l)
 
 
 ListIterator
-list_iterator_create (List l)
+list_iterator_create (LSDList l)
 {
     ListIterator i;
 
@@ -651,7 +651,7 @@ list_delete (ListIterator i)
 
 
 static void *
-list_node_create (List l, ListNode *pp, void *x)
+list_node_create (LSDList l, ListNode *pp, void *x)
 {
 /*  Inserts data pointed to by [x] into list [l] after [pp],
  *    the address of the previous node's "next" ptr.
@@ -686,7 +686,7 @@ list_node_create (List l, ListNode *pp, void *x)
 
 
 static void *
-list_node_destroy (List l, ListNode *pp)
+list_node_destroy (LSDList l, ListNode *pp)
 {
 /*  Removes the node pointed to by [*pp] from from list [l],
  *    where [pp] is the address of the previous node's "next" ptr.
@@ -721,7 +721,7 @@ list_node_destroy (List l, ListNode *pp)
 }
 
 
-static List
+static LSDList
 list_alloc (void)
 {
     return(list_alloc_aux(sizeof(struct list), &list_free_lists));
@@ -729,7 +729,7 @@ list_alloc (void)
 
 
 static void
-list_free (List l)
+list_free (LSDList l)
 {
     list_free_aux(l, &list_free_lists);
     return;

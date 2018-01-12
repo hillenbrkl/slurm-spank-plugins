@@ -37,7 +37,6 @@ SPANK_PLUGIN (tmpdir, 1);
 int slurm_spank_local_user_init (spank_t sp, int ac, char **av)
 {
     uint32_t jobid, stepid;
-    const char *tmpdir;
     char buf [1024];
     int n;
 
@@ -51,13 +50,10 @@ int slurm_spank_local_user_init (spank_t sp, int ac, char **av)
         return (-1);
     }
 
-    if (!(tmpdir = getenv ("TMPDIR")))
-        tmpdir = "/tmp";
-
-    n = snprintf (buf, sizeof (buf), "%s/%u.%u", tmpdir, jobid, stepid);
+    n = snprintf (buf, sizeof (buf), "/tmp/%u.%u", jobid, stepid);
 
     if ((n < 0) || (n > sizeof (buf) - 1)) {
-        slurm_error ("TMPDIR = \"%s\" too large. Aborting");
+        slurm_error ("TMPDIR string too large. Aborting");
         return (-1);
     }
 

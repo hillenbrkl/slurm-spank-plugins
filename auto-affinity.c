@@ -196,7 +196,7 @@ static int parse_option (const char *opt, int remote)
     return (-1);
 }
 
-static void list_clear (List l)
+static void list_clear (LSDList l)
 {
     char *s;
     while ((s = list_pop (l)))
@@ -204,7 +204,7 @@ static void list_clear (List l)
 }
 
 
-static int parse_cpus_list (List l)
+static int parse_cpus_list (LSDList l)
 {
     char str [4096];
 
@@ -229,11 +229,11 @@ static int parse_cpus_list (List l)
     return (0);
 }
 
-static List cpu_mask_list_expand (List l)
+static LSDList cpu_mask_list_expand (LSDList l)
 {
     int i, n;
     char *s;
-    List mask_list;
+    LSDList mask_list;
     mask_list = list_create ((ListDelF) free);
 
     while ((s = list_pop (l))) {
@@ -253,14 +253,14 @@ static List cpu_mask_list_expand (List l)
 }
 
 
-static int parse_cpu_mask_list (List l)
+static int parse_cpu_mask_list (LSDList l)
 {
     char *s;
     int n;
     int i = 0;
     int rc = 0;
 
-    List mask_list = cpu_mask_list_expand (l);
+    LSDList mask_list = cpu_mask_list_expand (l);
 
     nlist_elements = n = list_count (mask_list);
     cpu_mask_list = malloc (n * sizeof(cpu_set_t));
@@ -277,7 +277,7 @@ static int parse_cpu_mask_list (List l)
 static int parse_user_option (int val, const char *arg, int remote)
 {
     char *str;
-    List l;
+    LSDList l;
     int rc = 1;
 
     if (arg == NULL)
@@ -413,7 +413,7 @@ static int cpu_info_cmp (struct cpu_info *cpu1, struct cpu_info *cpu2)
 
 static int create_cpu_position_map (int ncpus)
 {
-    List cpu_info_list;
+    LSDList cpu_info_list;
     ListIterator iter;
     int i;
     struct cpu_info *cpu;

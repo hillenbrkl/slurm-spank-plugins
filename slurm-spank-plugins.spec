@@ -9,6 +9,7 @@
 #
 %define _with_opt() %{expand:%%{!?_without_%{1}:%%global _with_%{1} 1}}
 %define _without_opt() %{expand:%%{?_with_%{1}:%%global _with_%{1} 1}}
+%define _unpackaged_files_terminate_build 0
 
 #
 #  _with helper macro to test for slurm_with_*
@@ -38,9 +39,9 @@
 
 
 
-Name:    
-Version:
-Release:    
+Name:    slurm-spank-plugins
+Version: 0.25
+Release: 17.11.2
 
 Summary:    SLURM SPANK modules for CHAOS systems
 Group:      System Environment/Base

@@ -53,14 +53,14 @@
  *  Data Types  *
  ****************/
 
-typedef struct list * List;
+typedef struct list * LSDList;
 /*
- *  List opaque data type.
+ *  LSDList opaque data type.
  */
 
 typedef struct listIterator * ListIterator;
 /*
- *  List Iterator opaque data type.
+ *  LSDList Iterator opaque data type.
  */
 
 typedef void (*ListDelF) (void *x);
@@ -94,7 +94,7 @@ typedef int (*ListForF) (void *x, void *arg);
  *  General-Purpose Functions  *
  *******************************/
 
-List list_create (ListDelF f);
+LSDList list_create (ListDelF f);
 /*
  *  Creates and returns a new empty list, or lsd_nomem_error() on failure.
  *  The deletion function [f] is used to deallocate memory used by items
@@ -104,41 +104,41 @@ List list_create (ListDelF f);
  *    in a memory leak.
  */
 
-void list_destroy (List l);
+void list_destroy (LSDList l);
 /*
  *  Destroys list [l], freeing memory used for list iterators and the
  *    list itself; if a deletion function was specified when the list
  *    was created, it will be called for each item in the list.
  */
 
-int list_is_empty (List l);
+int list_is_empty (LSDList l);
 /*
  *  Returns non-zero if list [l] is empty; o/w returns zero.
  */
 
-int list_count (List l);
+int list_count (LSDList l);
 /*
  *  Returns the number of items in list [l].
  */
 
 
 /***************************
- *  List Access Functions  *
+ *  LSDList Access Functions  *
  ***************************/
 
-void * list_append (List l, void *x);
+void * list_append (LSDList l, void *x);
 /*
  *  Inserts data [x] at the end of list [l].
  *  Returns the data's ptr, or lsd_nomem_error() if insertion failed.
  */
 
-void * list_prepend (List l, void *x);
+void * list_prepend (LSDList l, void *x);
 /*
  *  Inserts data [x] at the beginning of list [l].
  *  Returns the data's ptr, or lsd_nomem_error() if insertion failed.
  */
 
-void * list_find_first (List l, ListFindF f, void *key);
+void * list_find_first (LSDList l, ListFindF f, void *key);
 /*
  *  Traverses list [l] using [f] to match each item with [key].
  *  Returns a ptr to the first item for which the function [f]
@@ -148,7 +148,7 @@ void * list_find_first (List l, ListFindF f, void *key);
  *    to be unique (according to the function [f]).
  */
 
-int list_delete_all (List l, ListFindF f, void *key);
+int list_delete_all (LSDList l, ListFindF f, void *key);
 /*
  *  Traverses list [l] using [f] to match each item with [key].
  *  Removes all items from the list for which the function [f] returns
@@ -157,7 +157,7 @@ int list_delete_all (List l, ListFindF f, void *key);
  *  Returns a count of the number of items removed from the list.
  */
 
-int list_for_each (List l, ListForF f, void *arg);
+int list_for_each (LSDList l, ListForF f, void *arg);
 /*
  *  For each item in list [l], invokes the function [f] with [arg].
  *  Returns a count of the number of items on which [f] was invoked.
@@ -165,7 +165,7 @@ int list_for_each (List l, ListForF f, void *arg);
  *    function returns the negative of that item's position in the list.
  */
 
-void list_sort (List l, ListCmpF f);
+void list_sort (LSDList l, ListCmpF f);
 /*
  *  Sorts list [l] into ascending order according to the function [f].
  *  Note: Sorting a list resets all iterators associated with the list.
@@ -177,19 +177,19 @@ void list_sort (List l, ListCmpF f);
  *  Stack Access Functions  *
  ****************************/
 
-void * list_push (List l, void *x);
+void * list_push (LSDList l, void *x);
 /*
  *  Pushes data [x] onto the top of stack [l].
  *  Returns the data's ptr, or lsd_nomem_error() if insertion failed.
  */
 
-void * list_pop (List l);
+void * list_pop (LSDList l);
 /*
  *  Pops the data item at the top of the stack [l].
  *  Returns the data's ptr, or NULL if the stack is empty.
  */
 
-void * list_peek (List l);
+void * list_peek (LSDList l);
 /*
  *  Peeks at the data item at the top of the stack (or head of the queue) [l].
  *  Returns the data's ptr, or NULL if the stack (or queue) is empty.
@@ -201,13 +201,13 @@ void * list_peek (List l);
  *  Queue Access Functions  *
  ****************************/
 
-void * list_enqueue (List l, void *x);
+void * list_enqueue (LSDList l, void *x);
 /*
  *  Enqueues data [x] at the tail of queue [l].
  *  Returns the data's ptr, or lsd_nomem_error() if insertion failed.
  */
 
-void * list_dequeue (List l);
+void * list_dequeue (LSDList l);
 /*
  *  Dequeues the data item at the head of the queue [l].
  *  Returns the data's ptr, or NULL if the queue is empty.
@@ -215,10 +215,10 @@ void * list_dequeue (List l);
 
 
 /*****************************
- *  List Iterator Functions  *
+ *  LSDList Iterator Functions  *
  *****************************/
 
-ListIterator list_iterator_create (List l);
+ListIterator list_iterator_create (LSDList l);
 /*
  *  Creates and returns a list iterator for non-destructively traversing
  *    list [l], or lsd_nomem_error() on failure.

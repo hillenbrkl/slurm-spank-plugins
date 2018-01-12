@@ -174,7 +174,7 @@ static int preserve_slurm_env (void)
 {
     char **p = environ;
     char *entry;
-    List l;
+    LSDList l;
 
     /*
      *  Be careful to iterate through environment variables
@@ -208,7 +208,7 @@ static int preserve_slurm_env (void)
 
 int slurm_spank_task_init (spank_t sp, int ac, char **av)
 {
-    List l;
+    LSDList l;
     const char **env;
     char *entry;
     char *var;

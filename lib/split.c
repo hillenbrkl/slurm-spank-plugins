@@ -66,7 +66,7 @@ static char *_next_tok(char *sep, char **str)
     return tok;
 }
 
-List list_split_append (List l, char *sep, char *str)
+LSDList list_split_append (LSDList l, char *sep, char *str)
 {
     char *tok;
 
@@ -95,15 +95,15 @@ fail:
  *   str (IN)   string containing tokens and separators
  *   RETURN     new list containing all tokens
  */
-List list_split(char *sep, char *str)
+LSDList list_split(char *sep, char *str)
 {
-    List new = list_create((ListDelF) free);
+    LSDList new = list_create((ListDelF) free);
     if (new == NULL)
         return NULL;
     return list_split_append(new, sep, str);
 }
 
-int list_join (char *result, size_t len, const char *sep, List l)
+int list_join (char *result, size_t len, const char *sep, LSDList l)
 {
     char *str = NULL;
     int n = 0;

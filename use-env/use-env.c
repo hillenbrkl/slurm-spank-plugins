@@ -28,8 +28,6 @@
 #include <string.h>
 #include <dlfcn.h>
 
-#include <pwd.h>
-
 #include <slurm/spank.h>
 
 #include "use-env.h"
@@ -39,11 +37,6 @@
 
 #define NO_SEARCH_SYSTEM 1<<0
 #define NO_SEARCH_USER   1<<1
-
-#ifndef SYSCONFDIR
-#define SYSCONFDIR   "/etc/slurm/"
-#endif
-
 
 SPANK_PLUGIN(use-env, 1)
 
@@ -56,7 +49,7 @@ static int local_user_cb_supported = 0;  /* 1 if spank_local_user is avail*/
 static int disable_use_env =  0;         /*  Disable the plugin           */
 static int disable_in_task =  0;         /*  Don't run in task if nonzero */
 static char * default_name = "default";  /*  Name of system default file  */
-static List   env_list     = NULL;       /*  Global list of files to read */
+static LSDList   env_list     = NULL;       /*  Global list of files to read */
 static char * home         = NULL;       /*  $HOME                        */
 
 /****************************************************************************
@@ -83,7 +76,7 @@ struct spank_option spank_options[] =
 {
     { "use-env", "[name]",
       "Read env from ~/.slurm/environment/[name] or "
-      SYSCONFDIR "/environment/[name]", 1, 0,
+     "/etc/slurm/environment/[name]", 1, 0,
       (spank_opt_cb_f) use_env_opt_process
     },
     SPANK_OPTIONS_TABLE_END
@@ -272,10 +265,10 @@ env_override_file_search (char *path, size_t len, const char *name, int flags)
     }
 
     if (check_sys) {
-        snprintf (path, len, SYSCONFDIR "/environment/%s", name);
+        snprintf (path, len, "/etc/slurm/environment/%s", name);
         if (access (path, R_OK) >= 0)
             return (path);
-        snprintf (path, len, SYSCONFDIR "/env-%s.conf", name);
+        snprintf (path, len, "/etc/slurm/env-%s.conf", name);
         if (access (path, R_OK) >= 0)
             return (path);
     }
@@ -299,7 +292,7 @@ static int path_cmp (char *x, char *y)
     return (strcmp (x, y) == 0);
 }
 
-static int check_and_append_env_opt (char *name, List l)
+static int check_and_append_env_opt (char *name, LSDList l)
 {
     int rc = 0;
     char buf [4096];
@@ -324,7 +317,7 @@ static int check_and_append_env_opt (char *name, List l)
 
 static int use_env_opt_process (int val, char *optarg, int remote) 
 {
-    List l;
+    LSDList l;
 
     if  (optarg == NULL) {
         slurm_error ("--use-env: Invalid argument");
@@ -422,8 +415,6 @@ static int set_argv_keywords (spank_t sp)
 
 static int define_all_keywords (spank_t sp)
 {
-    struct passwd *pw;
-    uid_t uid;
     /*
      *  These keywords are only accessible from this context
      */
@@ -447,18 +438,6 @@ static int define_all_keywords (spank_t sp)
     if (define_use_env_keyword (sp, "SLURM_LOCALID", S_TASK_ID) < 0)
         return (-1);
     if (define_use_env_keyword (sp, "SLURM_NODEID", S_JOB_NODEID) < 0)
-        return (-1);
-    if (define_use_env_keyword (sp, "SLURM_JOBUID", S_JOB_UID) < 0)
-        return (-1);
-    if (spank_get_item (sp, S_JOB_UID, &uid) != ESPANK_SUCCESS) {
-        slurm_error ("use-env: spank_get_item failed for S_JOB_UID\n");
-        return (-1);
-    }
-    if (!(pw = getpwuid (uid))) {
-        slurm_error ("use-env: Error looking up uid in /etc/passwd");
-        return (-1);
-    }
-    if (keyword_define ("SLURM_JOB_USERNAME", pw->pw_name) == NULL)
         return (-1);
 
     return (0);
